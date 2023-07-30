@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EARNINGS</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    .tooltip {
+    position: absolute;
+    padding: 6px;
+    background: #333;
+    color: #fff;
+    border-radius: 4px;
+    pointer-events: none;
+    }
+
+    body {
+    font-family: 'Chakra Petch', sans-serif;
+    }
+
+
+    .float-container {
+    /* border: 3px solid red; */
+    }
+
+    .float-child1 {
+    width: 70%;
+    float: left;
+    /* border: 2px solid red; */
+    }  
+
+    .float-child2 {
+    width: 26%;
+    float: left;
+    /* border: 2px solid red; */
+    }  
+
+
+    hr {
+    border: none;
+    height: 3px;
+    /* Set the hr color */
+    color: #333;  /* old IE */
+    background-color: #333;  /* Modern Browsers */
+    }
+  </style>
+</head>
+<body onload="loadCharts()">
+  <h1 style="font-size: 15px; text-align: left; display: inline-block; padding: 1em; margin: 10px; background-color: gray; border: 3px solid black;">
+    <a style=" text-decoration: none; color: black;" href="tour.html">Explore Tour Earnings</a>
+  </h1>
+<hr>
+<div style="background-color: blue;">
+  <p style="font-size: 30px; font-weight: bold; text-align: center; line-height: 0px;">Taylor Swift Tour Earnings Breakdown</p>
+</div>
+<hr>
+<br>
+
+<div class="float-container">
+  <div class="float-child">
+    <p style="font-size: 20px; font-weight: bold; text-align: center">How much has Taylor Swift earned from the 2023 Eras Tour in United States? </p>
+</div>
+
+  <div class="float-child1">
+        <div id="chart"></div>
+        <br>
+        <div id="tree-map-container"></div>
+  </div>
+
+    <div class="float-child2">
+      <p id="" style="padding-left: 2em; font-size: 15px; text-align: left;" >
+        <b>Context: </b>
+        In 2023, Taylor Swift has embarked on her long-awaited Eras Tour which celebrates the new release of her albums from pre-pandemic to today.
+        It also pays homage to the re-recorded albums she has released and beloved by fans including Fearless (Taylor's Version), Red (Taylor's Version), and Speak Now (Taylor's Version).
+        <br><br>
+        In the short span of 5 months, Taylor Swift has nearly completed the US legs of her global tour, with 6 more dates left in California this coming weekend.
+        <br><br>
+        <img src="img/erasus.png" width="100%">
+        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        <b>US Leg of Eras Tour</b>
+        <br><br>
+        <b>Instructions: </b>
+        Hover over the data points on the line chart that provides a breakdown of each show date including the revenue generated and attendees per day.<br>
+        The tree map on the lower left also shows 
+        the magnitude of the finanical impact in each city relative to other cities. When you hover over each tree cell, it will correlate the show date to the line chart.
+        <br><br>
+        <b>Data Source: </b>
+        <a href="https://www.taylorswift.com/tour-us/">Eras Tour Dates</a>        
+      </p>
+  </div>
+</div>
+
+
+  <script>
+    var avgTicket = 215
+    var percStadiumFilled = 0.5
+    var fees = 1 - 0.1
+    var takeHomeValue = avgTicket * fees
+    var pageWidth = 1050
+    var pageHeight = 400
+
+    const data = {
+      name: "Root",
+      children: [
+        { "date": "2023-03-18", "stadium": "State Farm Stadium", "name": "Glendale, AZ", "population": 196512, "days": 2, "seats": 157200 },
+        { "date": "2023-03-25", "stadium": "Allegiant Stadium", "name": "Las Vegas, NV", "population": 2150373, "days": 2, "seats": 143670 },
+        { "date": "2023-04-02", "stadium": "AT&T Stadium", "name": "Arlington, TX", "population": 392304, "days": 3, "seats": 315000 },
+        { "date": "2023-04-15", "stadium": "Raymond James Stadium", "name": "Tampa, FL", "population": 2683956, "days": 3, "seats": 225000 },
+        { "date": "2023-04-23", "stadium": "NRG Stadium", "name": "Houston, TX", "population": 5650910, "days": 3, "seats": 240000 },
+        { "date": "2023-04-30", "stadium": "Mercedes-Benz Stadium", "name": "Atlanta, GA", "population": 5046555, "days": 3, "seats": 225000 },
+        { "date": "2023-05-07", "stadium": "Nissan Stadium", "name": "Nashville, TN", "population": 1098486, "days": 3, "seats": 207429 },
+        { "date": "2023-05-14", "stadium": "Lincoln Financial Field", "name": "Philadelphia, PA", "population": 5512873, "days": 3, "seats": 209688 },
+        { "date": "2023-05-21", "stadium": "Gillette Stadium", "name": "Foxborough, MA", "population": 16693, "days": 3, "seats": 197634 },
+        { "date": "2023-05-28", "stadium": "MetLife Stadium", "name": "East Rutherford, NJ", "population": 9918, "days": 3, "seats": 265473 },
+        { "date": "2023-06-04", "stadium": "Soldier Field", "name": "Chicago, IL", "population": 4576, "days": 3, "seats": 184500 },
+        { "date": "2023-06-10", "stadium": "Ford Field", "name": "Detroit, MI", "population": 3522856, "days": 2, "seats": 156000 },
+        { "date": "2023-06-17", "stadium": "Acrisure Stadium", "name": "Pittsburgh, PA", "population": 1720279, "days": 2, "seats": 150000 },
+        { "date": "2023-06-24", "stadium": "U.S. Bank Stadium", "name": "Minneapolis, MN", "population": 2856952, "days": 2, "seats": 146000 },
+        { "date": "2023-07-01", "stadium": "Paycor Stadium", "name": "Cincinnati, OH", "population": 1712287, "days": 2, "seats": 131030 },
+        { "date": "2023-07-08", "stadium": "GEHA Field", "name": "Kansas City, MO", "population": 155745, "days": 2, "seats": 152832 },
+        { "date": "2023-07-15", "stadium": "Empower Field", "name": "Denver, CO", "population": 2650725, "days": 2, "seats": 168000 },
+        { "date": "2023-07-23", "stadium": "Lumen Field", "name": "Seattle, WA", "population": 3438221, "days": 2, "seats": 144000 },
+        { "date": "2023-07-29", "stadium": "Levi's Stadium", "name": "Santa Clara, CA", "population": 127922, "days": 2, "seats": 137000 },
+        { "date": "2023-08-09", "stadium": "Sofi Stadium", "name": "Los Angeles, CA", "population": 12121244, "days": 6, "seats": 501200 }
+      ]
+    };
+
+    var shows = data.children
+
+    function loadCharts() {
+        loadTreeMap()
+        loadScatterPlot()
+    }
+
+    function loadTreeMap() {
+        const width = pageWidth;
+        const height = 300;
+
+        const treemapLayout = d3.treemap()
+        .size([width, height])
+        .padding(2);
+
+        const root = d3.hierarchy(data).sum(d => d.seats || 0);
+
+        treemapLayout(root);
+
+        const svg = d3.select("#tree-map-container")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+        const cell = svg.selectAll("g")
+        .data(root.leaves())
+        .enter()
+        .append("g")
+        .attr("transform", d => `translate(${d.x0},${d.y0})`)
+        .attr("id", d => d.data.date + "box")
+        .on("mouseenter", handleMouseEnter) 
+        .on("mouseleave", handleMouseLeave);
+
+        cell.append("rect")
+        .attr("width", d => d.x1 - d.x0)
+        .attr("height", d => d.y1 - d.y0)
+        .attr("id", d => d.data.date + "rect")
+        .attr("fill", "gray");
+
+        cell.append("text")
+        .attr("x", 5)
+        .attr("y", 20)
+        .style("font-weight", "bold")
+        .style("font-size", "12px")
+        .text(d => `${d.data.name}`)
+
+        cell.append("text")
+        .attr("x", 5)
+        .attr("y", 40)
+        .style("font-size", "12px")
+        .text(d => `$${convertToUnits(d.data.seats * percStadiumFilled * d.data.days * takeHomeValue)}`)
+    }
+
+    function handleMouseEnter(event, d) {
+        document.getElementById(d.data.date.toISOString().split('T')[0] + "dot").setAttribute('fill', 'yellow');
+        document.getElementById(d.data.date.toISOString().split('T')[0] + "rect").setAttribute('fill', 'yellow');
+        d3.select(this).select("rect")
+    }
+
+    function convertToUnits(value) {
+        var myValue = Math.round(value / 1000000);
+
+        if (value > 1000000000) {
+            myValue = myValue / 1000
+            unit = "B"
+        } else {
+            unit = "M"
+        }
+        return myValue + unit
+    }
+
+    function handleMouseLeave(event, d) {
+        document.getElementById(d.data.date.toISOString().split('T')[0] + "dot").setAttribute('fill', 'gray');
+        document.getElementById(d.data.date.toISOString().split('T')[0] + "rect").setAttribute('fill', 'orange');
+
+      d3.select(this).select("rect")
+        .attr("fill", "gray");
+    }
+
+    function loadScatterPlot() {
+        showData = data.children
+        showData.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        // Calculate the cumulative sum of seats in each show
+        var rollingRevenue = 0
+        showData.forEach((entry) => {
+            currentRevenue = Math.round(entry.seats * percStadiumFilled * entry.days * takeHomeValue / 1000000)
+            rollingRevenue += currentRevenue
+            entry.showrevenue = currentRevenue
+            entry.revenue = rollingRevenue
+        });
+
+        console.log(showData)
+        const margin = { top: 20, right: 30, bottom: 60, left: 100 };
+        var scatterplotWidth = pageWidth;
+        var scatterplotHeight = pageHeight;
+        const width = scatterplotWidth - margin.left - margin.right;
+        const height = scatterplotHeight - margin.top - margin.bottom;
+
+        // Parse the date format
+        const parseDate = d3.timeParse('%Y-%m-%d');
+
+        // Set up the scales
+        const x = d3.scaleTime().range([0, width]);
+        const y = d3.scaleLinear().range([height, 0]);
+
+        const line = d3.line()
+        .x(d => x(d.date))
+        .y(d => y(d.revenue));
+
+        const svg = d3.select('#chart')
+        .append('svg')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+        showData.forEach(d => {
+            d.date = parseDate(d.date);
+            d.revenue = +d.revenue;
+        });
+
+        x.domain(d3.extent(showData, d => d.date));
+        y.domain([0, d3.max(showData, d => d.revenue)]);
+
+        // xaxis
+        svg.append('g')
+        .attr('transform', `translate(0, ${height})`)
+        .call(d3.axisBottom(x));
+
+        // yaxis
+        svg.append('g')
+        .call(d3.axisLeft(y));
+
+        // add line
+        svg.append('path')
+        .datum(showData)
+        .attr('fill', 'none')
+        .attr('stroke', 'gray')
+        .attr('stroke-width', 2)
+        .attr('d', line);
+
+        // tooltip addition
+        svg.selectAll('.dot')
+        .data(showData)
+        .enter()
+        .append('circle')
+        .attr("id", d => d.date.toISOString().split('T')[0] + "dot")
+        .attr('class', 'dot')
+        .attr('cx', d => x(d.date))
+        .attr('cy', d => y(d.revenue))
+        .attr('r', 5)
+        .attr('fill', 'gray')
+        .on('mouseover', function (event, d) {
+            document.getElementById(d.date.toISOString().split('T')[0] + "dot").setAttribute('fill', 'yellow');
+            document.getElementById(d.date.toISOString().split('T')[0] + "rect").setAttribute('fill', 'yellow');
+            d3.select(this).attr('fill', 'orange');
+            // when mouseover, add tooltip visibility
+            const tooltip = d3.select('body').append('div')
+            .attr('class', 'tooltip')
+            .style('left', `${event.pageX}px`)
+            .style('top', `${event.pageY}px`)
+            .html(`
+              <strong>${d.stadium}</strong><br>
+              <strong>Location:</strong> ${d.name}<br>
+              <strong>Date:</strong> ${d.date.toDateString()}<br>
+              <strong>Attendees/Day:</strong> ${Math.round(d.seats / d.days / 1000)}K<br>
+              <strong>Show Revenue:</strong> $${d.showrevenue}M<br>
+              <strong>Total Revenue:</strong> $${d.revenue}M`)
+            })
+            .on('mouseout', function (event, d) {
+                d3.select(this).attr('fill', 'gray');
+                document.getElementById(d.date.toISOString().split('T')[0] + "rect").setAttribute('fill', 'gray');
+                d3.select('.tooltip').remove();
+            });
+
+    // x label
+    svg.append('text')
+      .attr('class', 'axis-label')
+      .attr('x', width / 2)
+      .style("font-weight", "bold")
+      .attr('y', height + margin.bottom - 10)
+      .text('Date');
+
+    // y label
+    svg.append('text')
+      .attr('class', 'axis-label')
+      .attr('x', -height / 1.3)
+      .attr('y', -margin.left + 50)
+      .attr('transform', 'rotate(-90)')
+      .style("font-weight", "bold")
+      .text('Revenue (in Millions)');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taylor Swift Era's Tour Economics</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    .slidecontainer {
+    width: 10%;
+    }
+
+    .slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 25px; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+    }
+
+    .slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+    }
+
+    #yearCard {
+    background-size: cover;
+    background-position: center;
+    color: white;
+    height: 200px;
+    padding-top:50px;
+    }
+    
+    .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background:  black;
+    cursor: pointer; /* Cursor on hover */
+    }
+
+    .slider::-moz-range-thumb {
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: black;
+    cursor: pointer; /* Cursor on hover */
+    }
+
+    .bar {
+    fill: steelblue;
+    }
+
+    .bar-label {
+    fill: black;
+    font-size: 12px;
+    text-anchor: middle;
+    }
+
+    .x.axis text {
+    text-anchor: end;
+    transform: translate(-10px, 0) rotate(-45deg);
+    }
+
+    .x-axis text {
+    transform: rotate(-45deg);
+    text-anchor: end; 
+    }
+
+    #chart {
+    display: inline-block;
+    width: 72%;
+    height: 100%;
+    padding-top: 5em;
+    }
+
+    #selection {
+    display: inline-block;
+    float: right;
+    width: 25%;
+    }
+
+    #wrapper {
+    overflow: hidden;
+    }
+
+    .float-container {
+    /* border: 3px solid red; */
+    }
+
+    .float-child {
+    width: 33%;
+    float: left;
+    /* border: 2px solid red; */
+    }  
+
+    .eraSelect {
+    filter: grayscale(100%);
+    height: 120px;
+    padding: 0.5em;
+    }
+
+    body {
+    font-family: 'Chakra Petch', sans-serif;
+    }
+
+    .totalCard {
+    width: 300px;
+    margin-right: 80px;
+    margin-bottom: 20px;
+    padding: 5px;
+    background-color: white;
+    border: black solid 3px;
+    text-align: center;
+    font-size: 50px;
+    line-height: 0px;
+    float:right;
+    }
+
+    hr {
+    border: none;
+    height: 3px;
+    /* Set the hr color */
+    color: #333;  /* old IE */
+    background-color: #333;  /* Modern Browsers */
+    }
+  </style>
+</head>
+<body onload="loadPieChart('')">
+  <h1 style="font-size: 15px; text-align: left; display: inline-block; padding: 1em; margin: 10px; background-color: gray; border: 3px solid black;">
+    <a style=" text-decoration: none; color: black;" href="index.html">Explore Spotify Streams</a>
+  </h1>
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  <h1 style="font-size: 15px; text-align: right; display: inline-block; padding: 1em; margin: 10px; background-color: gray; border: 3px solid black;">
+    <a style=" text-decoration: none; color: black;" href="eras.html">Explore Eras Tour</a>
+  </h1>
+  
+  <hr>
+    <div style="background-color: blue;">
+      <p style="font-size: 30px; font-weight: bold; text-align: center; line-height: 0px;">Taylor Swift Tour Earnings Breakdown</p>
+    </div>
+  <hr>
+
+  <br><br>
+
+  <div class="float-container">
+      <div class="float-child">
+          <p style="font-size: 20px; font-weight: bold; text-align: center">What is the financial earnings of Taylor Swift's tours over the years? </p>
+          <svg id="pieChart"></svg>
+      </div>
+      <div class="float-child">
+          <div class="totalCard" id="totalRevCard">
+              <p id="totalRevenue"></p>
+              <p style="font-size: 20px; line-height: 0px;" >Total Tour Revenue</p>
+          </div>
+          <div class="totalCard" id="yearCard">
+              <br><br><br><br><br>
+              <p id="demo"></p>
+              <p style="font-size: 20px; line-height: 0px;" >Year</p>
+          </div>
+
+          <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+          <p style="margin-left:3em; font-size: 20px; line-height: 0px;" >
+              &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+              Slide between Years:</p>
+          <input style="margin-left:9.5em; margin-right:10em; width: 20em;" type="range" min="2010" max="2023" value="2015" class="slider" id="myRange">
+        </div>
+
+        <div class="float-child">
+          <p id="" style="padding-left: 1em; padding-right: 3em; font-size: 15px; text-align: left;" >
+            <b>Context: </b>
+            Taylor Swift has held 6+ tour in her career where she has performed at global stadiums in North America, Asia, and Europe. 
+            With a growing net worth of $600 million USD, she is one of the richest musical artists and it is not a question that most of her revenue comes 
+            from tours, merchandise, and album streams.
+
+            <br><br>
+
+            <b>Instructions: </b>
+            Explore gross revenue each year using the slider to the lower left.
+            To drill down into the tour earnings pie chart, you can mouseover each slice to see which tour generated the earnings amount. 
+            The slider acts as a snapshot for the total revenue per selected year.
+
+            <br><br>
+
+            The Total Tour Revenue KPI card shows Taylor Swift's total tour earnings up to the selected year. 
+            The background color of Total Tour Revenue Card changes colors  between red (least revenue), yellow, and green (most revenue) to indicate the amount of revenue.
+            
+            <br><br>
+
+            <b>Data Source: </b>
+            <a href="https://www.google.com/search?q=taylor+swift+speak+now+tour&sxsrf=AB5stBhrcSgD3i_-41sfnE4t0cfYfo-tdg%3A1690748251062&ei=W8XGZPOyA4Cs0PEPqr6I6As&ved=0ahUKEwizzKKHoLeAAxUAFjQIHSofAr0Q4dUDCBA&uact=5&oq=taylor+swift+speak+now+tour&gs_lp=Egxnd3Mtd2l6LXNlcnAiG3RheWxvciBzd2lmdCBzcGVhayBub3cgdG91cjIIEAAYigUYkQIyChAAGIAEGBQYhwIyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyCxAuGNQCGIoFGJECMgUQABiABEiCGVC7BFihGHAAeACQAQGYAYEBoAHqEaoBBDIzLjW4AQPIAQD4AQHCAggQABiABBiwA8ICCRAAGAgYHhiwA8ICCxAAGIoFGIYDGLADwgIHECMYigUYJ8ICDRAuGIoFGLEDGIMBGEPCAgcQABiKBRhDwgINEC4YigUYxwEY0QMYQ8ICBxAuGIoFGEPCAg0QLhiDARixAxiKBRhDwgIREC4YgAQYsQMYgwEYxwEY0QPCAgsQLhiDARixAxiKBcICChAuGIoFGLEDGEPCAgoQABiKBRixAxhDwgIQEC4YgAQYFBiHAhixAxiDAcICCxAuGIoFGLEDGIMBwgINEAAYigUYsQMYgwEYQ8ICCBAuGIAEGLEDwgILEAAYigUYsQMYgwHCAgsQABiABBixAxiDAcICDRAAGIAEGBQYhwIYsQPCAggQABiABBixA8ICCxAAGIoFGLEDGJECwgIOEAAYigUYsQMYgwEYkQLCAgQQABgDwgILEC4YigUYsQMYkQLiAwQYASBBiAYBkAYI&sclient=gws-wiz-serp#:~:text=Search%20Results-,Speak%20Now%20World%20Tour,https%3A//en.wikipedia.org%20%E2%80%BA%20wiki%20%E2%80%BA%20Speak_Now_World_...,-The%20Speak%20Now">[Wikipedia] Taylor Swift Tours</a>
+          </p>
+      </div>
+    </div>
+    <ul class="legend" id="legend"></ul>
+</body>
+<script>
+  const taylorSwiftAlbumsColors = {
+    "Taylor Swift": "#B8D1B3",
+    "Fearless": "#A4865A",
+    "Speak Now": "#CAABCB",
+    "Red": "#813D4A",
+    "1989": "#BAE5F9",
+    "Reputation": "#7B7575",
+    "Lover": "#F7B2CE",
+    "Folklore": "#D1CCC6",
+    "Evermore": "#C9AF97",
+    "Midnights": "#363E57"
+  };
+
+  var tourData = [
+    { label: "Fearless Tour", value: 66.5, album: "Fearless", year: 2010, image: "https://i1.sndcdn.com/artworks-000141632767-trc5le-t500x500.jpg"},
+    { label: "Speak Now Tour", value: 123.7 , album: "Speak Now", year: 2012, image: "https://www.ajc.com/resizer/equuUU1Bo8gK6iZ9v3Ex-lu7m38=/arc-anglerfish-arc2-prod-ajc/public/3KYNYATQWVW765IMLEEN424YAE.jpg"},
+    { label: "The Red Tour", value: 150.2 , album: "Red", year: 2014, image: "https://www.billboard.com/wp-content/uploads/stylus/2626899-taylor-swift-emas-617-409.jpg?w=617"},
+    { label: "1989 Tour", value: 250.7, album : "1989" , year: 2015, image: "https://s.abcnews.com/images/Entertainment/GTY_Taylor_swift_mm_151214_16x9_1600.jpg"},
+    { label: "Reputation Tour", value: 345.7 , album: "Reputation", year: 2018, image: "https://www.billboard.com/wp-content/uploads/media/taylor-swift-reputation-tour-nov-21-2018-billboard-1548.jpg"},
+    { label: "Eras Tour", value: 291 , album: "Midnights", year: 2023, image: "https://d1ef7ke0x2i9g8.cloudfront.net/singapore/_large1400/1251502/Taylor-Swift-Adds-Three-More-Dates-to-Eras-Tour-in-SGP.webp"},
+  ];
+
+  var slider = document.getElementById("myRange");
+  var output = document.getElementById("demo");
+  output.innerHTML = slider.value;
+  var pieData = tourData;
+
+// Update the current slider value (each time you drag the slider handle)
+  slider.oninput = function() {
+    pieData = tourData.filter((d) => d.year <= slider.value);
+    output.innerHTML = this.value;
+    loadPieChart()
+  }
+
+
+function loadPieChart() {
+  var dim = 300;
+  const margin = { top:80, right: 50, bottom: 50, left: 0 };
+  pieWidth = dim - margin.left - margin.right;
+  pieHeight = dim - margin.top - margin.bottom;
+  const radius = dim / 2;
+
+  const svg = d3.select("#pieChart")
+    .attr("width", pieWidth + 200)
+    .attr("height", pieHeight + 200)
+    .append("g")
+    .attr("transform", `translate(${pieWidth}, ${pieHeight})`);
+
+  const pie = d3.pie()
+    .value(d => d.value)
+    .sort(null);
+
+  const arc = d3.arc()
+    .innerRadius(0)
+    .outerRadius(radius);
+
+  const slices = svg.selectAll("path")
+    .data(pie(pieData))
+    .enter()
+    .append("path")
+    .attr("d", arc)
+    .attr("fill", (d, i) => taylorSwiftAlbumsColors[d.data.album])
+    .attr("id", d => d.data.album + "Pie")
+    .on("mouseover", handleMouseOver)
+    .on("mouseout", hideTooltip);
+
+  // add label to pie chart
+  const labelArc = d3.arc()
+    .innerRadius(radius * 0.6)
+    .outerRadius(radius * 0.6);
+
+  const textLabels = svg.selectAll('text')
+    .data(pie(pieData))
+    .enter()
+    .append('text')
+    .attr('transform', d => `translate(${labelArc.centroid(d)})`)
+    .attr('text-anchor', 'middle')
+    .text(d => `$${d.data.value}M`);
+
+  const tooltip = d3.select("body")
+  .append("div")
+  .attr("id", "tooltip")
+  .style("position", "absolute")
+  .style("padding", "5px")
+  .style("background", "rgba(0, 0, 0, 0.7)")
+  .style("color", "#fff")
+  .style("border-radius", "5px")
+  .style("opacity", 0);
+
+  let sumRevenue = 0;
+
+  for (let i = 0; i < pieData.length; i++) {
+      sumRevenue += pieData[i].value;
+  }
+
+  const yearToFind = parseInt(document.getElementById("demo").innerHTML);
+  const tourEntry = tourData.find(obj => obj.year === yearToFind);
+
+  if (sumRevenue > 600) {
+    document.getElementById("totalRevCard").style.backgroundColor = "#79de79"
+    // document.getElementById("yearCard").style.backgroundImage  = tourData[document.getElementById("demo").innerHTML]
+  } else if (sumRevenue > 250) {
+    document.getElementById("totalRevCard").style.backgroundColor = "#fcfc99"
+  } else {
+    document.getElementById("totalRevCard").style.backgroundColor = "#fb6962"
+  }
+  document.getElementById("yearCard").style.backgroundImage  = "url(" + tourEntry.image + ")"
+  document.getElementById("totalRevenue").innerHTML = "$" + Math.round(sumRevenue) + " M";
+}
+
+  // Function to handle mouseover event
+  function handleMouseOver(event, d) {
+      const label = d.data.label;
+      const value = d.data.value;
+    const tooltip = d3.select("#tooltip");
+    tooltip.html(`${label} (${d.data.year})<br> Revenue: $${value}M`)
+      .style("left", (event.pageX + 10) + "px")
+      .style("top", (event.pageY - 20) + "px")
+      .style("opacity", 1);
+  }
+
+  function hideTooltip(event, d) {
+
+      const label = d.data.label;
+      const value = d.data.value;
+    const tooltip = d3.select("#tooltip");
+    tooltip.style("opacity", 0);
+  }
+
+  function convertMilToBil(value) {
+    return Math.round(value / 10) / 100 + "B"
+  }
+
+  function showTooltip(event, d) {
+    const tooltip = d3.select("#tooltip");
+    tooltip.html(`Title: ${d.label}<br> Album: ${d.album}<br>Streams: ${Math.round(d.value / 1000000)}M<br>
+    <img width="200em" src=${taylorSwiftAlbums[d.album]}>`)
+      .style("left", (event.pageX + 10) + "px")
+      .style("top", (event.pageY - 20) + "px")
+      .style("opacity", 1);
+  }
+
+  function hideTooltip() {
+    const tooltip = d3.select("#tooltip");
+    tooltip.style("opacity", 0);
+  }
+
+  function convertToUnits(value) {
+    var myValue = Math.round(value / 1000000);
+
+    if (value > 1000000000) {
+      myValue = myValue / 1000
+      unit = "B"
+    } else {
+      unit = "M"
+    }
+    return myValue + unit
+  }
+</script>
+</html>

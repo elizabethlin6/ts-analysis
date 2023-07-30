@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pie Chart with Hover Labels</title>
+  <style>
+    /* Add any necessary styling here */
+  </style>
+</head>
+<body onload="loadPieChart()">
+  <div id="chart-container">
+    <svg id="chart"></svg>
+  </div>
+
+  <p id="total"></p>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // Data for the pie chart
+const data = [
+  { label: "Fearless Tour", value: 66.5, album: "Fearless"},
+  { label: "Speak Now Tour", value: 123.7 , album: "Speak Now"},
+  { label: "The Red Tour", value: 150.2 , album: "Red"},
+  { label: "1989 Tour", value: 250.7, album : "1989" },
+  { label: "Reputation Tour", value: 345.7 , album: "Reputation"},
+];
+
+
+const taylorSwiftAlbumsColors = {
+  "Taylor Swift": "#B8D1B3",
+  "Fearless": "#A4865A",
+  "Speak Now": "#CAABCB",
+  "Red": "#813D4A",
+  "1989": "#BAE5F9",
+  "Reputation": "#7B7575",
+  "Lover": "#F7B2CE",
+  "Folklore": "#D1CCC6",
+  "Evermore": "#C9AF97",
+  "Midnights": "#363E57"
+};
+
+
+let sumRevenue = 0;
+for (let i = 0; i < data.length; i++) {
+    sumRevenue += data[i].value;
+}
+
+document.getElementById("total").innerHTML = sumRevenue + "M";
+
+function loadPieChart() {
+    // Set up the dimensions for the pie chart
+var width = 500;
+var height = 500;
+
+
+const margin = { top:50, right: 50, bottom: 50, left: 50 };
+pieWidth = width - margin.left - margin.right;
+pieHeight = height - margin.top - margin.bottom;
+
+
+const radius = Math.min(width, height) / 2;
+
+// Set up the color scale
+const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+// Create the SVG container
+const svg = d3.select("#chart")
+  .attr("width", width + 300)
+  .attr("height", height + 300)
+  .append("g")
+  .attr("transform", `translate(${pieWidth}, ${pieHeight})`);
+
+// Create the pie layout
+const pie = d3.pie()
+  .value(d => d.value)
+  .sort(null);
+
+// Generate the arc for each slice
+const arc = d3.arc()
+  .innerRadius(0)
+  .outerRadius(radius);
+
+// Create the pie slices
+const slices = svg.selectAll("path")
+  .data(pie(data))
+  .enter()
+  .append("path")
+  .attr("d", arc)
+  .attr("fill", (d, i) => taylorSwiftAlbumsColors[d.data.album])
+  .attr("id", d => d.data.album + "Pie")
+  .on("mouseover", handleMouseOver)
+  .on("mouseout", hideTooltip);
+
+
+  // Add text labels to the pie chart
+const labelArc = d3.arc()
+  .innerRadius(radius * 0.6)
+  .outerRadius(radius * 0.6);
+
+const textLabels = svg.selectAll('text')
+  .data(pie(data))
+  .enter()
+  .append('text')
+  .attr('transform', d => `translate(${labelArc.centroid(d)})`)
+  .attr('text-anchor', 'middle')
+  .text(d => `${d.data.value}M`);
+
+  const tooltip = d3.select("body")
+  .append("div")
+  .attr("id", "tooltip")
+  .style("position", "absolute")
+  .style("padding", "5px")
+  .style("background", "rgba(0, 0, 0, 0.7)")
+  .style("color", "#fff")
+  .style("border-radius", "5px")
+  .style("opacity", 0);
+}
+
+// Function to handle mouseover event
+function handleMouseOver(event, d) {
+    const label = d.data.label;
+    const value = d.data.value;
+    document.getElementById(d.data.album + "Pie").style.stroke = "black"
+    document.getElementById(d.data.album + "Pie").style.strokeWidth = 3
+  const tooltip = d3.select("#tooltip");
+  tooltip.html(`${label}<br> Revenue: $${value}M`)
+    .style("left", (event.pageX + 10) + "px")
+    .style("top", (event.pageY - 20) + "px")
+    .style("opacity", 1);
+}
+
+function hideTooltip(event, d) {
+
+    const label = d.data.label;
+    const value = d.data.value;
+    document.getElementById(d.data.album + "Pie").style.stroke = "transparent"
+    document.getElementById(d.data.album + "Pie").style.strokeWidth = 0
+  const tooltip = d3.select("#tooltip");
+  tooltip.style("opacity", 0);
+}
+  </script>
+</body>
+</html>

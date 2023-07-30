@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taylor Swift Era's Tour Economics</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+
+  <style>
+    .bar {
+    fill: steelblue;
+    }
+
+    .bar-label {
+    fill: black;
+    font-size: 12px;
+    text-anchor: middle;
+    }
+
+    .x.axis text {
+    text-anchor: end;
+    transform: translate(-10px, 0) rotate(-45deg);
+    }
+
+    .x-axis text {
+    transform: rotate(-45deg);
+    text-anchor: end; 
+    }
+
+    #chart {
+    display: inline-block;
+    width: 72%;
+    height: 100%;
+    padding-top: 5em;
+    }
+
+    #selection {
+    display: inline-block;
+    float: right;
+    width: 25%;
+    }
+
+    #wrapper {
+    overflow: hidden;
+    }
+
+    .float-container {
+    /* border: 3px solid red; */
+    }
+
+    .float-child {
+    width: 20%;
+    float: left;
+    /* border: 2px solid red; */
+    }  
+    .eraSelect {
+    filter: grayscale(100%);
+    height: 100px;
+    padding: 0.5em;
+    }
+
+    body {
+    font-family: 'Chakra Petch', sans-serif;
+    }
+
+    #totalCard {
+    width: 300px;
+    margin-right: 25px;
+    margin-bottom: 20px;
+    padding: 5px;
+    background-color: white;
+    border: black solid 3px;
+    text-align: center;
+    font-size: 50px;
+    line-height: 0px;
+    float:right;
+    }
+
+    button {
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+    border: 3px solid black;
+    margin-top:1.5em;
+    margin-bottom:1.5em;
+    }
+
+    hr {
+    border: none;
+    height: 3px;
+    color: #333;  
+    background-color: #333;  
+    }
+  </style>
+</head>
+
+<body onload="loadCharts('20')">
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  <h1 style="font-size: 15px; text-align: right; display: inline-block; padding: 1em; margin: 10px; background-color: gray; border: 3px solid black;">
+    <a style=" text-decoration: none; color: black;" href="tour.html">Explore Tour Earnings</a>
+  </h1>
+
+  <hr>
+    <div>
+      <p style="font-size: 30px; font-weight: bold; text-align: center; line-height: 0px;">Taylor Swift Spotify Stream Breakdown</p>
+    </div>
+  <hr>
+
+
+  <div class="float-container">
+    <p style="padding-left: 10em; padding-top: 2em; padding-right: 10em; font-size: 15px; text-align: left;" >
+      <b>Context: </b>
+      Taylor Swift is a global popstar whose music has spanned over 13 year in the making. With her growing catalog of music, from country to pop and indie genres, she has grown 
+      her influence into households over the world. She identifies periods of her music careers as "Eras" that follow each new album she releases. 
+      Today, we will explore her Spotify Streaming profile, specifically streams per each Era. 
+      <br><br>
+      <b>Instructions: </b>
+      Hover over each bar in the chart below to view the song information and stream counts. Users can select specific Eras by clicking on the image of the Era to the lower right.
+      We provide Top N Filters to display Top Spotify Songs by streams.  ( + ) indicates adding Top N by 5 and ( - ) indicates subtracting Top N by 5. The maximum Top N value is 50 and minimum Top N value is 0. M represents Million and B represents Billion unit streams.
+      The Total Spotify Streams KPI Card sums the total stream count based on the filters on the visual.
+      <br><br>
+      <b>Data Source: </b>
+      <a href="https://kworb.net/spotify/artist/06HL4z0CvFAxyc27GXpf02_songs.html">[kworb] Taylor Swift - Spotify Top Songs</a>
+    </p>
+
+    <br><br>
+
+    <b style="font-size: 20px;">
+    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+    What are the most popular Taylor Swift songs on Spotify?
+    </b>
+
+    <br><br>
+
+    <div id="chart" class="float-child"></div>
+    <center>
+      <div id="totalCard">
+        <p id="streamsCount"></p>
+        <p style="font-size: 20px; line-height: 0px;" >Total Spotify Streams</p>
+      </div>
+    </center>
+
+    <div id="selection" class="float-child">
+      <center>
+        <p id="" style="font-size: 25px; line-height: 0px; display: inline;" >Top N Filtering&nbsp&nbsp</p>
+        <button onclick="loadBarChart('-5')">-</button>
+        <button onclick="loadBarChart('5')">+</button>
+        <p id="selectAlbum" style="font-size: 25px; line-height: 0px;" >Select Era:</p>
+        <img class="eraSelect" id="Taylor Swift" onclick="loadBarChart('Taylor Swift')" src="img/Taylor Swift.png">
+        <img class="eraSelect" id="Fearless" onclick="loadBarChart('Fearless')" src="img/Fearless.png">
+        <br>
+        <img class="eraSelect" id="Speak Now" onclick="loadBarChart('Speak Now')" src="img/Speak Now.png">
+        <img class="eraSelect" id="Red" onclick="loadBarChart('Red')" src="img/Red.png">
+        <br>
+        <img class="eraSelect" id="1989" onclick="loadBarChart('1989')" src="img/1989.png">
+        <img class="eraSelect" id="Reputation" onclick="loadBarChart('Reputation')" src="img/Reputation.png">
+        <br>
+        <img class="eraSelect" id="Lover" onclick="loadBarChart('Lover')" src="img/Lover.png" >
+        <img class="eraSelect" id="Folklore" onclick="loadBarChart('Folklore')" src="img/Folklore.png" >
+        <br>
+        <img class="eraSelect" id="Evermore" onclick="loadBarChart('Evermore')" src="img/Evermore.png" >
+        <img class="eraSelect" id="Midnights" onclick="loadBarChart('Midnights')" src="img/Midnights.png" >
+      </center>
+    </div>
+  </div>
+<script>
+  const taylorSwiftAlbumStreams = {
+    "Taylor Swift": "0.58",
+    "Fearless": "4.34",
+    "Speak Now": "2.77",
+    "Red": "6.33",
+    "1989": "6.8",
+    "Reputation": "5.71",
+    "Lover": "6.89",
+    "Folklore": "5.18",
+    "Evermore": "3.3",
+    "Midnights": "5.85"
+  };
+
+  const taylorSwiftSongs = [
+    { label: "Blank Space", value: "1368207988", album: "1989"},
+    { label: "Shake It Off", value: "1120428369", album: "1989"},
+    { label: "Anti-Hero", value: "1012355448"  , album: "Midnights"},
+    { label: "Look What You Made Me Do", value: "905130934" , album: "Reputation"},
+    { label: "Lover", value: "891082711" , album: "Lover"},
+    { label: "Cruel Summer", value: "828208472" , album: "Lover"},
+    { label: "cardigan", value: "822756162" , album: "Folklore"},
+    { label: "Style", value: "798230552" , album: "1989"},
+    { label: "Wildest Dreams", value: "786761637" , album: "1989"},
+    { label: "You Need To Calm Down", value: "762726552", album: "Lover"},
+    { label: "ME!", value: "756226171" , album: "Lover"},
+    { label: "Love Story", value: "743387428" , album: "Fearless"},
+    { label: "Delicate", value: "739858387" , album: "Reputation"},
+    { label: "I Knew You Were Trouble", value: "695981152"  , album: "Red"},
+    { label: "Don't Blame Me", value: "693331400" , album: "Reputation"},
+    { label: "Enchanted", value: "628129960" , album: "Speak Now"},
+    { label: "willow", value: "624879176", album: "Evermore"},
+    { label: "august", value: "615492557", album: "Folklore"},
+    { label: "ATW (10 Minute Version) (Taylor's Verion)", value: "588381928" , album: "Red"},
+    { label: "We Are Never Ever Getting Back Together", value: "587913561"  , album: "Red"},
+    { label: "exile (feat. Bon Iver)", value: "567371571" , album: "Folklore"},
+    { label: "You Belong With Me", value: "539379262" , album: "Fearless"},
+    { label: "The Man", value: "527466901", album: "Lover"},
+    { label: "...Ready For It?", value: "517253544" , album: "Reputation"},
+    { label: "Lavender Haze", value: "493754975"  , album: "Midnights"},
+    { label: "Bad Blood", value: "465811763" , album: "1989"},
+    { label: "Paper Rings", value: "451253663", album: "Lover"},
+    { label: "Gorgeous", value: "448818240" , album: "Reputation"},
+    { label: "Love Story (Taylor’s Version)", value: "443122207"  , album: "Fearless"},
+    { label: "Midnight Rain", value: "438640764"  , album: "Midnights"},
+    { label: "Wildest Dreams (Taylor's Version)", value: "432737687" , album: "1989"},
+    { label: "Getaway Car", value: "429216076" , album: "Reputation"},
+    { label: "champagne problems", value: "427696237", album: "Evermore"},
+    { label: "Karma", value: "414019683"  , album: "Midnights"},
+    { label: "the 1", value: "411341458", album: "Folklore"},
+    { label: "End Game", value: "385221430", album: "Reputation"},
+    { label: "You Belong With Me (Taylor’s Version)", value: "356563452"  , album: "Fearless"},
+    { label: "You're On Your Own, Kid", value: "353157969"  , album: "Midnights"},
+    { label: "22", value: "341817076"  , album: "Red"},
+    { label: "Bejeweled", value: "332702184" , album: "Midnights"},
+    { label: "Back To December", value: "332464126" , album: "Speak Now"},
+    { label: "Snow On The Beach (feat. Lana Del Rey)", value: "325963344"  , album: "Midnights"},
+    { label: "Maroon", value: "320725268" , album: "Midnights"},
+    { label: "I Did Something Bad", value: "318308525" , album: "Reputation"},
+    { label: "my tears ricochet", value: "316990233", album: "Folklore"},
+    { label: "Call It What You Want", value: "289553538" , album: "Reputation"},
+    { label: "The Way I Loved You (Taylor’s Version)", value: "281077766" , album: "Fearless"},
+    { label: "mirrorball", value: "279281961", album: "Folklore"},
+    { label: "I Forgot That You Existed", value: "277231737", album: "Lover"},
+    { label: "Out Of The Woods", value: "265412384", album: "1989"},
+    { label: "Afterglow", value: "264769611", album: "Lover"},
+    { label: "this is me trying", value: "262966364", album: "Folklore"},
+    { label: "Mr. Perfectly Fine (Taylor’s Version) (From The Vault)", value: "262252898" , album: "Fearless"},
+    { label: "The Archer", value: "260734239", album: "Lover"},
+    { label: "the last great american dynasty", value: "258054857" , album: "Folklore"},
+    { label: "Vigilante Shit", value: "256558045" , album: "Midnights"},
+    { label: "Everything Has Changed", value: "253751351" , album: "Red"},
+    { label: "illicit affairs", value: "249200092" , album: "Folklore"},
+    { label: "betty", value: "249099412" , album: "Folklore"},
+    { label: "invisible string", value: "247638161", album: "Folklore"},
+    { label: "Our Song", value: "243138846", album: "Taylor Swift"},
+    { label: "Red", value: "230987502" , album: "Red"},
+    { label: "London Boy", value: "230245153", album: "Lover"},
+    { label: "Cornelia Street", value: "228820164", album: "Lover"},
+    { label: "All Too Well", value: "228418587"  , album: "Red"},
+    { label: "Question...?", value: "224745547"  , album: "Midnights"},
+    { label: "Miss Americana & The Heartbreak Prince", value: "224005838", album: "Lover"},
+    { label: "Mastermind", value: "220896048" , album: "Midnights"},
+    { label: "seven", value: "213501113", album: "Folklore"},
+    { label: "gold rush", value: "212756254", album: "Evermore"},
+    { label: "Daylight", value: "210189176", album: "Lover"},
+    { label: "Death By A Thousand Cuts", value: "208743831", album: "Lover"},
+    { label: "Mean", value: "208421066"  , album: "Speak Now"},
+    { label: "New Romantics", value: "206115096" , album: "1989"},
+    { label: "Dress", value: "202394734" , album: "Reputation"},
+    { label: "Mine", value: "202148416"  , album: "Speak Now"},
+    { label: "I Think He Knows", value: "201823903", album: "Lover"},
+    { label: "no body, no crime (feat. HAIM)", value: "201690574" , album: "Evermore"},
+    { label: "Welcome To New York", value: "201444515" , album: "1989"},
+    { label: "I Knew You Were Trouble (Taylor's Version)", value: "199081198" , album: "Red"},
+    { label: "right where you left me", value: "195795006", album: "Evermore"},
+    { label: "Red (Taylor's Version)", value: "190594327"  , album: "Red"},
+    { label: "All Of The Girls You Loved Before", value: "190307397"  , album: "Lover"},
+    { label: "Labyrinth", value: "188909869" , album: "Midnights"},
+    { label: "Sweet Nothing", value: "188024063" , album: "Midnights"},
+    { label: "tolerate it", value: "187800784", album: "Evermore"},
+    { label: "We Are Never Ever Getting Back Together (Taylor's Version)", value: "186057939"  , album: "Red"},
+    { label: "King Of My Heart", value: "184307679" , album: "Reputation"},
+    { label: "‘tis the damn season", value: "184182311", album: "Evermore"},
+    { label: "The Great War", value: "183779715"  , album: "Midnights"},
+    { label: "All You Had To Do Was Stay", value: "182888855", album: "1989"},
+    { label: "Would've, Could've, Should've", value: "179498137" , album: "Midnights"},
+    { label: "All Too Well (Taylor's Version)", value: "179125880"  , album: "Red"},
+    { label: "Dancing With Our Hands Tied", value: "178499511" , album: "Reputation"},
+    { label: "Better Than Revenge", value: "165922169"  , album: "Speak Now"},
+    { label: "Sparks Fly", value: "162901744"  , album: "Speak Now"},
+    { label: "False God", value: "158808832", album: "Lover"},
+    { label: "Clean", value: "158075712" , album: "1989"},
+    { label: "This Is Why We Can't Have Nice Things", value: "157871697" , album: "Reputation"},
+    { label: "mad woman", value: "157613751" , album: "Folklore"},
+    { label: "I Bet You Think About Me (feat. Chris Stapleton) (Taylor’s Version) (From The Vault)", value: "156470183" , album: "Red"},
+    { label: "22 (Taylor's Version)", value: "155582385"  , album: "Red"},
+    { label: "ivy", value: "154605278", album: "Evermore"},
+    { label: "peace", value: "153556119", album: "Folklore"},
+    { label: "Nothing New (feat. Phoebe Bridgers) (Taylor’s Version) (From The Vault)", value: "152832042" , album: "Red"},
+    { label: "evermore (feat. Bon Iver)", value: "150684057", album: "Evermore"},
+    { label: "Message In A Bottle (Taylor's Version) (From The Vault)", value: "148118026" , album: "Red"},
+    { label: "long story short", value: "143449840", album: "Evermore"},
+    { label: "Picture To Burn", value: "142635744"  , album: "Taylor Swift"},
+    { label: "The Story Of Us", value: "140692402", album: "Speak Now"},
+    { label: "epiphany", value: "138861242", album: "Folklore"},
+    { label: "hoax", value: "137126874", album: "Folklore"},
+    { label: "happiness", value: "137085886" , album: "Evermore"},
+    { label: "New Year’s Day", value: "135871901" , album: "Reputation"},
+    { label: "How You Get The Girl", value: "135034307" , album: "1989"},
+    { label: "Fearless (Taylor’s Version)", value: "133885251" , album: "Fearless"},
+    { label: "This Love (Taylor’s Version)", value: "133583282", album: "1989"},
+    { label: "coney island (feat. The National)", value: "132114143", album: "Evermore"},
+    { label: "Dear John", value: "131165797" , album: "Speak Now"},
+    { label: "marjorie", value: "130587202", album: "Evermore"},
+    { label: "cowboy like me", value: "129078905", album: "Evermore"},
+    { label: "Speak Now", value: "128176884"  , album: "Speak Now"},
+    { label: "Paris", value: "127688870"  , album: "Midnights"},
+    { label: "So It Goes...", value: "125855492" , album: "Reputation"},
+    { label: "Bigger Than The Whole Sky", value: "122964798" , album: "Midnights"},
+    { label: "dorothea", value: "122637773", album: "Evermore"},
+    { label: "I Wish You Would", value: "119688253" , album: "1989"},
+    { label: "The Very First Night (Taylor's Version) (From The Vault)", value: "118609098"  , album: "Red"},
+    { label: "Begin Again", value: "116244792" , album: "Red"},
+    { label: "Wonderland", value: "113714840" , album: "1989"},
+    { label: "Soon You’ll Get Better (feat. The Chicks)", value: "112468210", album: "Lover"},
+    { label: "Last Kiss", value: "112308035" , album: "Speak Now"},
+    { label: "Run (feat. Ed Sheeran) (Taylor’s Version) (From The Vault)", value: "111909731" , album: "Red"},
+    { label: "You Are In Love", value: "111268181" , album: "1989"},
+    { label: "I Know Places", value: "108737831" , album: "1989"},
+    { label: "High Infidelity", value: "107152816" , album: "Midnights"},
+    { label: "Fifteen", value: "104504839" , album: "Fearless"},
+    { label: "Only The Young - Featured in Miss Americana", value: "103212877" },
+    { label: "White Horse", value: "103157734" , album: "Fearless"},
+    { label: "the lakes", value: "102701396", album: "Folklore"},
+    { label: "Fearless", value: "102465165" , album: "Fearless"},
+    { label: "Tim McGraw", value: "102126566"  , album: "Taylor Swift"},
+    { label: "It's Nice To Have A Friend", value: "100894681", album: "Lover"},
+    { label: "Better Man (Taylor's Version) (From The Vault)", value: "99820457" , album: "Red"},
+    { label: "Everything Has Changed (feat. Ed Sheeran) (Taylor’s Version)", value: "97066342" , album: "Red"},
+    { label: "Haunted", value: "92763334"  , album: "Speak Now"},
+    { label: "Should've Said No", value: "92433143" , album: "Taylor Swift"},
+    { label: "This Love", value: "92341984", album: "1989"},
+    { label: "Long Live", value: "90577515" , album: "Speak Now"},
+    { label: "State Of Grace (Taylor's Version)", value: "90351702"  , album: "Red"},
+    { label: "You All Over Me (feat. Maren Morris) (Taylor’s Version) (From The Vault)", value: "89790013"  , album: "Fearless"},
+    { label: "closure", value: "89623377", album: "Evermore"},
+    { label: "Glitch", value: "85519684"  , album: "Midnights"},
+    { label: "Dear Reader", value: "85103216" , album: "Midnights"},
+    { label: "Babe (Taylor's Version) (From The Vault)", value: "83508228"  , album: "Red"},
+    { label: "Treacherous (Taylor's Version)", value: "79265822"  , album: "Red"},
+    { label: "Never Grow Up", value: "77544410" , album: "Speak Now"},
+    { label: "Come Back...Be Here (Taylor's Version)", value: "76294775" , album: "Red"},
+    { label: "Forever & Always (Taylor’s Version)", value: "75823927"  , album: "Fearless"},
+    { label: "The Last Time (feat. Gary Lightbody of Snow Patrol) (Taylor’s Version)", value: "75364985" , album: "Red"},
+    { label: "it’s time to go", value: "73175329" , album: "Evermore"},
+    { label: "Hits Different", value: "72280816" , album: "Midnights"},
+    { label: "Fifteen (Taylor’s Version)", value: "69344174" , album: "Fearless"},
+    { label: "Begin Again (Taylor's Version)", value: "69020174"  , album: "Red"},
+    { label: "Ours", value: "66878590" , album: "Speak Now"},
+    { label: "Forever Winter (Taylor's Version) (From The Vault)", value: "66339325"  , album: "Red"},
+    { label: "I Almost Do (Taylor's Version)", value: "66266321"  , album: "Red"},
+    { label: "Sad Beautiful Tragic (Taylor's Version)", value: "65641697"  , album: "Red"},
+    { label: "White Horse (Taylor’s Version)", value: "64998034" , album: "Fearless"},
+    { label: "Stay Stay Stay (Taylor's Version)", value: "64569789" , album: "Red"},
+    { label: "Breathe", value: "64346109" , album: "Fearless"},
+    { label: "Snow On The Beach (feat. More Lana Del Rey)", value: "63613778"  , album: "Midnights"},
+    { label: "The Last Time", value: "63391551"  , album: "Red"},
+    { label: "The Way I Loved You", value: "63312104" , album: "Fearless"},
+    { label: "I Can See You (Taylor’s Version) (From The Vault)", value: "62810655" },
+    { label: "Hey Stephen (Taylor’s Version)", value: "62700747" , album: "Fearless"},
+    { label: "Holy Ground (Taylor's Version)", value: "60336870"  , album: "Red"},
+    { label: "I Almost Do", value: "59404546" , album: "Red"},
+    { label: "That’s When (feat. Keith Urban) (Taylor’s Version) (From The Vault)", value: "58113859" , album: "Fearless"},
+    { label: "State Of Grace", value: "58106679"  , album: "Red"},
+    { label: "The Lucky One (Taylor's Version)", value: "55480370" , album: "Red"},
+    { label: "Stay Stay Stay", value: "54570224"  , album: "Red"},
+    { label: "September - Recorded at The Tracking Room Nashville", value: "53511544" },
+    { label: "Treacherous", value: "52847276" , album: "Red"},
+    { label: "Holy Ground", value: "51950420" , album: "Red"},
+    { label: "Don’t You (Taylor’s Version) (From The Vault)", value: "50386423"  , album: "Fearless"},
+    { label: "The Moment I Knew (Taylor's Version)", value: "50297528" , album: "Red"},
+    { label: "The Other Side Of The Door (Taylor’s Version)", value: "50261477" , album: "Fearless"},
+    { label: "You’re Not Sorry (Taylor’s Version)", value: "50051976" , album: "Fearless"},
+    { label: "Forever & Always", value: "49972150" , album: "Fearless"},
+    { label: "Starlight (Taylor's Version)", value: "49571701"  , album: "Red"},
+    { label: "Innocent", value: "48589790" , album: "Speak Now"},
+    { label: "Karma (feat. Ice Spice)", value: "47902402"  , album: "Midnights"},
+    { label: "Breathe (feat. Colbie Caillat) (Taylor’s Version)", value: "47692090" , album: "Fearless"},
+    { label: "Enchanted (Taylor's Version)", value: "47178088" , album: "Speak Now"},
+    { label: "Back To December (Taylor's Version)", value: "45889030"  , album: "Speak Now"},
+    { label: "Hey Stephen", value: "45645247" , album: "Fearless"},
+    { label: "You're Not Sorry", value: "43251010" , album: "Fearless"},
+    { label: "We Were Happy (Taylor’s Version) (From The Vault)", value: "43145513" , album: "Fearless"},
+    { label: "Mine (Taylor's Version)", value: "42797425" , album: "Speak Now"},
+    { label: "Girl At Home (Taylor's Version)", value: "42244396" , album: "Red"},
+    { label: "The Lucky One", value: "41927353"  , album: "Red"},
+    { label: "Starlight", value: "41479896" , album: "Red"},
+    { label: "Tell Me Why (Taylor’s Version)", value: "40820374" , album: "Fearless"},
+    { label: "If This Was A Movie", value: "40319370" , album: "Speak Now"},
+    { label: "Come Back...Be Here", value: "40240059" , album: "Red"},
+    { label: "Bye Bye Baby (Taylor’s Version) (From The Vault)", value: "39846668" , album: "Fearless"},
+    { label: "Untouchable (Taylor’s Version)", value: "38938112"  , album: "Fearless"},
+    { label: "Jump Then Fall (Taylor’s Version)", value: "38342003" , album: "Fearless"},
+    { label: "State Of Grace (Acoustic Version) (Taylor's Version)", value: "38076480"  , album: "Fearless"},
+    { label: "I'm Only Me When I'm With You", value: "38069925" , album: "Fearless"},
+    { label: "Sad Beautiful Tragic", value: "38028432"  , album: "Red"},
+    { label: "Today Was A Fairytale (Taylor’s Version)", value: "37580496" , album: "Fearless"},
+    { label: "The Best Day (Taylor’s Version)", value: "36732321" , album: "Fearless"},
+    { label: "The Best Day", value: "36482378" , album: "Fearless"},
+  ];
+
+  const taylorSwiftAlbums = {
+    "Taylor Swift": "https://upload.wikimedia.org/wikipedia/en/1/1f/Taylor_Swift_-_Taylor_Swift.png",
+    "Fearless": "https://upload.wikimedia.org/wikipedia/en/8/86/Taylor_Swift_-_Fearless.png",
+    "Speak Now": "https://upload.wikimedia.org/wikipedia/en/8/8f/Taylor_Swift_-_Speak_Now_cover.png",
+    "Red": "https://upload.wikimedia.org/wikipedia/en/e/e8/Taylor_Swift_-_Red.png",
+    "1989": "https://upload.wikimedia.org/wikipedia/en/f/f6/Taylor_Swift_-_1989.png",
+    "Reputation": "https://upload.wikimedia.org/wikipedia/en/f/f2/Taylor_Swift_-_Reputation.png",
+    "Lover": "https://upload.wikimedia.org/wikipedia/en/c/cd/Taylor_Swift_-_Lover.png",
+    "Folklore": "https://upload.wikimedia.org/wikipedia/en/f/f8/Taylor_Swift_-_Folklore.png",
+    "Evermore": "https://upload.wikimedia.org/wikipedia/en/0/0a/Taylor_Swift_-_Evermore.png",
+    "Midnights": "https://upload.wikimedia.org/wikipedia/en/9/9f/Midnights_-_Taylor_Swift.png"
+  };
+
+  const taylorSwiftAlbumsColors = {
+    "Taylor Swift": "#B8D1B3",
+    "Fearless": "#A4865A",
+    "Speak Now": "#CAABCB",
+    "Red": "#813D4A",
+    "1989": "#BAE5F9",
+    "Reputation": "#7B7575",
+    "Lover": "#F7B2CE",
+    "Folklore": "#D1CCC6",
+    "Evermore": "#C9AF97",
+    "Midnights": "#363E57"
+  };
+
+  function loadCharts() {
+    loadBarChart("0")
+  }
+
+  function handleMouseOver(event, d) {
+    const label = d.data.label;
+    const value = d.data.value;
+    const tooltip = d3.select("#tooltip");
+    tooltip.html(`${label}<br> Revenue: $${value} M`)
+    .style("left", (event.pageX + 10) + "px")
+    .style("top", (event.pageY - 20) + "px")
+    .style("opacity", 1);
+  }
+
+  function hideTooltip(event, d) {
+    const label = d.data.label;
+    const value = d.data.value;
+    const tooltip = d3.select("#tooltip");
+    tooltip.style("opacity", 0);
+  }
+
+  var topN = 20;
+
+  function loadBarChart(targetAlbum) {
+    const images = document.querySelectorAll('img');
+    // Loop through the images and apply the grayscale filter
+    images.forEach(image => {
+      image.style.filter = 'grayscale(100%)';
+    });
+
+    d3.select("#chart").selectAll("*").remove()
+    var data = taylorSwiftSongs;
+    var selectCaption = ""
+
+    if (targetAlbum !== "-5" && targetAlbum !== "5" && targetAlbum !== "0") {
+      document.getElementById(targetAlbum).style.filter = 'grayscale(0%)';
+      data = data.filter((d) => d.album === targetAlbum);   
+      selectCaption = targetAlbum;
+    } else {
+      topN =  topN + parseInt(targetAlbum);
+      data = taylorSwiftSongs.slice(0, Math.min(Math.max(topN, 5), 50));
+      console.log(data)
+    }
+
+    if (selectCaption === "Evermore" || selectCaption === "Folklore" || selectCaption === "Reputation") {
+      selectCaption = selectCaption.toLowerCase()
+    }
+    document.getElementById("selectAlbum").innerHTML = "Select Era: <b>" + selectCaption + "<b>";
+
+    const attribute_values = data.map(obj => obj.value);
+    const max_attribute_value = Math.max(...attribute_values);
+
+    // Set up dimensions
+    const margin = { top: 20, right: 0, bottom: 200, left: 80 };
+    const width = 1000 - margin.left - margin.right;
+    const height = 900 - margin.top - margin.bottom;
+
+    // Create SVG
+    const svg = d3.select("#chart")
+      .append("svg")
+      .attr("width", width + margin.l33eft + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`)
+
+    // X and Y scales
+    const xScale = d3.scaleBand()
+      .domain(data.map(d => d.label))
+      .range([0, width])
+      .padding(0.1)
+
+    const yScale = d3.scaleLinear()
+      .domain([0, max_attribute_value])
+      .range([height, 0]);
+
+    // Add bars
+    const bars = svg.selectAll("rect")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("x", d => xScale(d.label))
+      .attr("y", d => yScale(d.value))
+      .attr("width", xScale.bandwidth())
+      .attr("height", d => height - yScale(d.value))
+      .attr("fill", d => taylorSwiftAlbumsColors[d.album])
+      .attr("title", d => d.value); // Set the title attribute with the value
+
+    // Add x-axis and y-axis
+    const xAxis = d3.axisBottom(xScale);
+    const yAxis = d3.axisLeft(yScale).ticks(5).tickFormat(d3.format(".2s"));
+
+    svg.append("g")
+      .attr("class", "x-axis")
+      .attr("transform", `translate(0, ${height})`)
+      .call(xAxis);
+
+    svg.append("g")
+      .attr("class", "y-axis")
+      .call(yAxis);
+
+    // Labels on Bars
+    svg.selectAll(".bar-label")
+      .data(data)
+      .enter().append("text")
+      .attr("class", "bar-label")
+      .attr("x", d => xScale(d.label) + xScale.bandwidth() / 2)
+      .attr("y", d => yScale(d.value) - 5)
+      .text(d => `${convertToUnits(d.value)}`)
+      .attr("text-anchor", "middle");
+
+
+    // Tooltip
+    const tooltip = d3.select("body")
+      .append("div")
+      .attr("id", "tooltip")
+      .style("position", "absolute")
+      .style("padding", "5px")
+      .style("background", "rgba(0, 0, 0, 0.7)")
+      .style("color", "#fff")
+      .style("border-radius", "5px")
+      .style("opacity", 0);
+
+    // Add event listeners to show and hide the tooltip
+    bars.on("mouseover", showTooltip)
+      .on("mouseout", hideTooltip);
+
+    let streamsInMil = 0;
+    for (let i = 0; i < data.length; i++) {
+      streamsInMil += Math.round(data[i].value / 1000000);
+    }
+    document.getElementById("streamsCount").innerHTML = convertMilToBil(streamsInMil)
+
+    svg.append("text")
+      .attr("class", "axis-label")
+      .attr("x", width / 2)
+      .attr("y", height + margin.top + 120)
+      .style("text-anchor", "middle")
+      .style("font-weight", "bold")
+      .text("Song Name");
+
+    // Add y-axis label
+    svg.append("text")
+      .attr("class", "axis-label")
+      .attr("x", -(height / 2))
+      .attr("y", 20 - margin.left)
+      .attr("transform", "rotate(-90)")
+      .style("text-anchor", "middle")
+      .style("font-weight", "bold")
+      .text("Spotify Streams (Millions)");
+
+  }
+
+  function convertMilToBil(value) {
+    return Math.round(value / 10) / 100 + " B"
+  }
+
+  function showTooltip(event, d) {
+    const tooltip = d3.select("#tooltip");
+    tooltip.html(`Title: ${d.label}<br> Album: ${d.album}<br>Streams: ${Math.round(d.value / 1000000)} M<br>
+    <img width="200em" src=${taylorSwiftAlbums[d.album]}>`)
+      .style("left", (event.pageX + 10) + "px")
+      .style("top", (event.pageY - 20) + "px")
+      .style("opacity", 1);
+  }
+
+  function hideTooltip() {
+    const tooltip = d3.select("#tooltip");
+    tooltip.style("opacity", 0);
+  }
+
+  function convertToUnits(value) {
+    var myValue = Math.round(value / 1000000);
+
+    if (value > 1000000000) {
+      myValue = myValue / 1000
+      unit = " B"
+    } else {
+      unit = " M"
+    }
+    return myValue + unit
+  }
+</script>
+</body>
+</html>
