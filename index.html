@@ -526,7 +526,7 @@
       .enter().append("text")
       .attr("class", "bar-label")
       .attr("x", d => xScale(d.label) + xScale.bandwidth() / 2)
-      .attr("y", d => yScale(d.value) - 5)
+      .attr("y", d => yScale(d.value) + 25)
       .text(d => `${convertToUnits(d.value)}`)
       .attr("text-anchor", "middle");
 
@@ -569,16 +569,15 @@
       .style("text-anchor", "middle")
       .style("font-weight", "bold")
       .text("Spotify Streams (Millions)");
-
   }
 
   function convertMilToBil(value) {
-    return Math.round(value / 10) / 100 + " B"
+    return Math.round(value / 10) / 100 + "B"
   }
 
   function showTooltip(event, d) {
     const tooltip = d3.select("#tooltip");
-    tooltip.html(`Title: ${d.label}<br> Album: ${d.album}<br>Streams: ${Math.round(d.value / 1000000)} M<br>
+    tooltip.html(`Title: ${d.label}<br> Album: ${d.album}<br>Streams: ${Math.round(d.value / 1000000)}M<br>
     <img width="200em" src=${taylorSwiftAlbums[d.album]}>`)
       .style("left", (event.pageX + 10) + "px")
       .style("top", (event.pageY - 20) + "px")
@@ -595,9 +594,9 @@
 
     if (value > 1000000000) {
       myValue = myValue / 1000
-      unit = " B"
+      unit = "B"
     } else {
-      unit = " M"
+      unit = "M"
     }
     return myValue + unit
   }
