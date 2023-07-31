@@ -57,13 +57,21 @@
 
 <div class="float-container">
   <div class="float-child">
-    <p style="font-size: 20px; font-weight: bold; text-align: center">How much has Taylor Swift earned from the 2023 Eras Tour in United States? </p>
+    <p style="font-size: 20px; font-weight: bold">
+      &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+      How much has Taylor Swift earned from the 2023 Eras Tour in United States? </p>
 </div>
 
   <div class="float-child1">
         <div id="chart"></div>
         <br>
-        <div id="tree-map-container"></div>
+
+        <p style="font-size: 20px; font-weight: bold; text-align: center">
+          &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+          &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+          Select US City:</p>
+
+        <div style="padding-left: 4em;" id="tree-map-container"></div>
   </div>
 
     <div class="float-child2">
@@ -79,7 +87,8 @@
         <b>US Leg of Eras Tour</b>
         <br><br>
         <b>Instructions: </b>
-        Hover over the data points on the line chart that provides a breakdown of each show date including the revenue generated and attendees per day.<br>
+        Hover over the data points on the line chart that provides a breakdown of each show date including the revenue generated and attendees per day.
+        <br><br>
         The tree map on the lower left also shows 
         the magnitude of the finanical impact in each city relative to other cities. When you hover over each tree cell, it will correlate the show date to the line chart.
         <br><br>
@@ -132,7 +141,7 @@
     }
 
     function loadTreeMap() {
-        const width = pageWidth;
+        const width = 980;
         const height = 300;
 
         const treemapLayout = d3.treemap()
@@ -174,7 +183,7 @@
         .attr("x", 5)
         .attr("y", 40)
         .style("font-size", "12px")
-        .text(d => `$${convertToUnits(d.data.seats * percStadiumFilled * d.data.days * takeHomeValue)}`)
+        .text(d => `$${convertToUnits(d.data.seats * percStadiumFilled * d.data.days * takeHomeValue)} (${d.data.days} nights)`)
     }
 
     function handleMouseEnter(event, d) {
@@ -311,11 +320,11 @@
     // y label
     svg.append('text')
       .attr('class', 'axis-label')
-      .attr('x', -height / 1.3)
+      .attr('x', -height / 1.1)
       .attr('y', -margin.left + 50)
       .attr('transform', 'rotate(-90)')
       .style("font-weight", "bold")
-      .text('Revenue (in Millions)');
+      .text('Cumulative Revenue (in Millions)');
     }
   </script>
 </body>

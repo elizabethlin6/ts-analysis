@@ -433,17 +433,7 @@
   function loadCharts() {
     loadBarChart("0")
   }
-
-  function handleMouseOver(event, d) {
-    const label = d.data.label;
-    const value = d.data.value;
-    const tooltip = d3.select("#tooltip");
-    tooltip.html(`${label}<br> Revenue: $${value} M`)
-    .style("left", (event.pageX + 10) + "px")
-    .style("top", (event.pageY - 20) + "px")
-    .style("opacity", 1);
-  }
-
+  
   function hideTooltip(event, d) {
     const label = d.data.label;
     const value = d.data.value;
